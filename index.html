@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sketch</title>
+    <title>Peg Game</title>
 
     <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -13,6 +13,36 @@
   </head>
 
   <body>
+    <div id="ui">
+      <div id="instructions">
+        <div>"JUMP ALL BUT ONE GAMES"</div>
+        <div>JUMP EACH TEE AND REMOVE IT</div>
+        <div>LEAVE ONLY ONE– YOU'RE GENIUS</div>
+        <div>LEAVE TWO AND YOU'RE PURTY SMART</div>
+        <div>LEAVE THREE AND YOU'RE JUST PLAIN DUMB</div>
+        <div>LEAVE FOUR OR MOR'N YOU'RE JUST PLAIN</div>
+        <div>"EG-NO-RA-MOOSE</div>
+      </div>
+
+      <div id="hole-buttons" role="toolbar" aria-label="Select open hole">
+        <button class="hole-btn" data-idx="1" onclick="setOpenHole(1)">1</button>
+        <button class="hole-btn" data-idx="2" onclick="setOpenHole(2)">2</button>
+        <button class="hole-btn" data-idx="3" onclick="setOpenHole(3)">3</button>
+        <button class="hole-btn" data-idx="4" onclick="setOpenHole(4)">4</button>
+        <button class="hole-btn" data-idx="5" onclick="setOpenHole(5)">5</button>
+        <button class="hole-btn" data-idx="6" onclick="setOpenHole(6)">6</button>
+        <button class="hole-btn" data-idx="7" onclick="setOpenHole(7)">7</button>
+        <button class="hole-btn" data-idx="8" onclick="setOpenHole(8)">8</button>
+        <button class="hole-btn" data-idx="9" onclick="setOpenHole(9)">9</button>
+        <button class="hole-btn" data-idx="10" onclick="setOpenHole(10)">10</button>
+        <button class="hole-btn" data-idx="11" onclick="setOpenHole(11)">11</button>
+        <button class="hole-btn" data-idx="12" onclick="setOpenHole(12)">12</button>
+        <button class="hole-btn" data-idx="13" onclick="setOpenHole(13)">13</button>
+        <button class="hole-btn" data-idx="14" onclick="setOpenHole(14)">14</button>
+        <button class="hole-btn" data-idx="15" onclick="setOpenHole(15)">15</button>
+      </div>
+    </div>
+
     <script src="sketch.js"></script>
   </body>
 </html>
