@@ -24,23 +24,29 @@
         <div>"EG-NO-RA-MOOSE</div>
       </div>
 
-      <div id="hole-buttons" role="toolbar" aria-label="Select open hole">
-        <button class="hole-btn" data-idx="1" onclick="setOpenHole(1)">1</button>
-        <button class="hole-btn" data-idx="2" onclick="setOpenHole(2)">2</button>
-        <button class="hole-btn" data-idx="3" onclick="setOpenHole(3)">3</button>
-        <button class="hole-btn" data-idx="4" onclick="setOpenHole(4)">4</button>
-        <button class="hole-btn" data-idx="5" onclick="setOpenHole(5)">5</button>
-        <button class="hole-btn" data-idx="6" onclick="setOpenHole(6)">6</button>
-        <button class="hole-btn" data-idx="7" onclick="setOpenHole(7)">7</button>
-        <button class="hole-btn" data-idx="8" onclick="setOpenHole(8)">8</button>
-        <button class="hole-btn" data-idx="9" onclick="setOpenHole(9)">9</button>
-        <button class="hole-btn" data-idx="10" onclick="setOpenHole(10)">10</button>
-        <button class="hole-btn" data-idx="11" onclick="setOpenHole(11)">11</button>
-        <button class="hole-btn" data-idx="12" onclick="setOpenHole(12)">12</button>
-        <button class="hole-btn" data-idx="13" onclick="setOpenHole(13)">13</button>
-        <button class="hole-btn" data-idx="14" onclick="setOpenHole(14)">14</button>
-        <button class="hole-btn" data-idx="15" onclick="setOpenHole(15)">15</button>
-      </div>
+      <!-- Top numbered hole buttons removed; use bottom selector instead -->
+    </div>
+
+    <div id="bottom-controls" role="region" aria-label="Open hole selector">
+      <select id="hole-select" aria-label="Select open hole">
+        <!-- options populated by JS or fallback provided below -->
+        <option value="1">Open hole 1</option>
+        <option value="2">Open hole 2</option>
+        <option value="3">Open hole 3</option>
+        <option value="4">Open hole 4</option>
+        <option value="5">Open hole 5</option>
+        <option value="6">Open hole 6</option>
+        <option value="7">Open hole 7</option>
+        <option value="8">Open hole 8</option>
+        <option value="9">Open hole 9</option>
+        <option value="10">Open hole 10</option>
+        <option value="11">Open hole 11</option>
+        <option value="12">Open hole 12</option>
+        <option value="13">Open hole 13</option>
+        <option value="14">Open hole 14</option>
+        <option value="15">Open hole 15</option>
+      </select>
+      <button id="hole-select-btn" class="hole-btn" type="button">Set Open Hole</button>
     </div>
 
     <script src="sketch.js"></script>
