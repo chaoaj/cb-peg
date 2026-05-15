@@ -80,3 +80,37 @@ canvas {
   .hole-btn { min-width: 32px; height: 32px; padding: 6px; }
   #instructions { font-size: 12px; }
 }
+
+/* Extra small screens (e.g. iPhone SE) - make hole buttons horizontally scrollable and more compact */
+@media (max-width: 380px) {
+  #ui { gap: 6px; top: 6px; }
+  #instructions { font-size: 11px; padding: 6px 8px; }
+  #hole-buttons {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    padding: 4px 8px;
+  }
+  .hole-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    width: 34px;
+    height: 34px;
+    padding: 4px 6px;
+    margin-right: 6px;
+    font-size: 12px;
+  }
+  .hole-btn:last-child { margin-right: 8px; }
+}
+
+/* Very tiny screens (iPhone SE) — hide verbose instructions and tighten the buttons further */
+@media (max-width: 340px) {
+  #instructions { display: none; }
+  #ui { top: 4px; gap: 4px; }
+  #hole-buttons { padding: 2px 6px; max-width: 98%; }
+  .hole-btn { width: 30px; height: 30px; min-width: 26px; font-size: 11px; padding: 3px 5px; }
+}

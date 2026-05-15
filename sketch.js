@@ -106,10 +106,11 @@ function drawWoodenBoard(centerX, topY, rowSpacing) {
 }
 
 function updateLayout() {
-  // Reserve space for UI text at top and bottom
-  const padding = 18;
-  const topReserved = Math.max(80, height * 0.12);
-  const bottomReserved = Math.max(60, height * 0.08);
+  // Reserve space for UI text at top and bottom. Use tighter values on very narrow screens (iPhone SE)
+  const padding = 12;
+  const isNarrow = width <= 380;
+  const topReserved = isNarrow ? Math.max(56, height * 0.10) : Math.max(80, height * 0.12);
+  const bottomReserved = isNarrow ? Math.max(44, height * 0.06) : Math.max(60, height * 0.08);
 
   const usableWidth = Math.max(100, width - padding * 2);
   const availableHeight = Math.max(100, height - topReserved - bottomReserved - padding);
@@ -118,13 +119,14 @@ function updateLayout() {
   const spacingY = (availableHeight * 2) / ((NUM_ROWS - 1) * Math.sqrt(3));
 
   // Choose the tighter spacing to fit both axes
-  const rawSpacing = Math.min(spacingX, spacingY);
-  const minSpacing = 20;
+  let rawSpacing = Math.min(spacingX, spacingY);
+  if (isNarrow) rawSpacing = Math.min(rawSpacing, usableWidth / (NUM_ROWS + 0.5));
+  const minSpacing = isNarrow ? 14 : 20;
   const maxSpacing = Math.min(90, rawSpacing);
   boardSpacing = Math.max(minSpacing, maxSpacing);
 
-  // peg radius scales with spacing
-  pegRadius = Math.max(8, boardSpacing * 0.32);
+  // peg radius scales with spacing (slightly smaller on narrow screens)
+  pegRadius = Math.max(6, boardSpacing * (isNarrow ? 0.28 : 0.32));
 }
 
 function initializeBoard(openIndex) {
@@ -175,8 +177,9 @@ function draw() {
   const centerX = width / 2;
   const rowSpacing = boardSpacing * Math.sqrt(3) / 2; // vertical spacing for triangular packing
   const totalHeight = (NUM_ROWS - 1) * rowSpacing;
-  const topReserved = Math.max(80, height * 0.12);
-  const bottomReserved = Math.max(60, height * 0.08);
+  const isNarrow = width <= 380;
+  const topReserved = isNarrow ? Math.max(56, height * 0.10) : Math.max(80, height * 0.12);
+  const bottomReserved = isNarrow ? Math.max(44, height * 0.06) : Math.max(60, height * 0.08);
   const availableHeight = height - topReserved - bottomReserved;
   const topY = topReserved + Math.max(0, (availableHeight - totalHeight) / 2);
 
@@ -287,8 +290,9 @@ function mousePressed() {
   const centerX = width / 2;
   const rowSpacing = boardSpacing * Math.sqrt(3) / 2;
   const totalHeight = (NUM_ROWS - 1) * rowSpacing;
-  const topReserved = Math.max(80, height * 0.12);
-  const bottomReserved = Math.max(60, height * 0.08);
+  const isNarrow = width <= 380;
+  const topReserved = isNarrow ? Math.max(56, height * 0.10) : Math.max(80, height * 0.12);
+  const bottomReserved = isNarrow ? Math.max(44, height * 0.06) : Math.max(60, height * 0.08);
   const availableHeight = height - topReserved - bottomReserved;
   const topY = topReserved + Math.max(0, (availableHeight - totalHeight) / 2);
 
