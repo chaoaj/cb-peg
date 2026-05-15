@@ -12,6 +12,10 @@ let winMessage = "";
 let pegColors = new Array(TOTAL_HOLES).fill(null);
 const PEG_PALETTE = ['#E67E22', '#F1C40F', '#3498DB', '#F1C40F', '#FFFFFF'];
 
+// Cached wood texture buffer to avoid redrawing grain every frame (prevents flicker)
+let woodBuffer = null;
+let woodBufferKey = { w: 0, h: 0, spacing: 0, topY: -1 };
+
 // Undo functionality - store move history
 let moveHistory = [];
 
@@ -45,6 +49,7 @@ function setup() {
 }
 
 function drawWoodenBoard(centerX, topY, rowSpacing) {
+  // compute triangle bounds
   const xs = [];
   const ys = [];
   for (let r = 0; r < NUM_ROWS; r++) {
@@ -69,41 +74,65 @@ function drawWoodenBoard(centerX, topY, rowSpacing) {
   const left = { x: centerX - halfBase, y: baseY };
   const right = { x: centerX + halfBase, y: baseY };
 
-  noStroke();
-  const c1 = color('#cfa16e');
-  const c2 = color('#b0713a');
-  const strips = 40;
-  const ctx = drawingContext;
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(apex.x, apex.y);
-  ctx.lineTo(right.x, right.y);
-  ctx.lineTo(left.x, left.y);
-  ctx.closePath();
-  ctx.clip();
-  for (let i = 0; i <= strips; i++) {
-    const t = i / strips;
-    fill(lerpColor(c1, c2, t));
-    const y = apex.y + t * (baseY - apex.y);
-    rect(centerX - halfBase - 10, y, halfBase * 2 + 20, (baseY - apex.y) / strips + 1);
-  }
-  const grainCount = Math.floor(8 + halfBase / 20);
-  for (let g = 0; g < grainCount; g++) {
-    const y = apex.y + (g / grainCount) * (baseY - apex.y) + random(-4, 4);
-    ctx.beginPath();
-    const startX = centerX - halfBase - 20;
-    const endX = centerX + halfBase + 20;
-    let first = true;
-    for (let x = startX; x <= endX; x += 6) {
-      const wobble = Math.sin((x * 0.02) + g * 0.6) * (2 + g * 0.12) + random(-1, 1);
-      const yy = y + wobble;
-      if (first) { ctx.moveTo(x, yy); first = false; } else { ctx.lineTo(x, yy); }
+  // Regenerate the wood buffer only when layout changes to avoid flicker
+  const needNew = !woodBuffer || woodBufferKey.w !== width || woodBufferKey.h !== height || woodBufferKey.spacing !== boardSpacing || Math.abs(woodBufferKey.topY - topY) > 1;
+  if (needNew) {
+    woodBuffer = createGraphics(width, height);
+    woodBuffer.clear();
+    const g = woodBuffer;
+
+    // deterministic PRNG so texture is stable across frames
+    function makePRNG(seed) {
+      let s = seed >>> 0;
+      return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
     }
-    ctx.strokeStyle = 'rgba(80,50,20,' + (0.06 + Math.random() * 0.06) + ')';
-    ctx.lineWidth = 1 + Math.random() * 0.6;
-    ctx.stroke();
+    const seed = Math.floor(centerX + topY + boardSpacing * 1000) || 1;
+    const rnd = makePRNG(seed);
+
+    const c1 = color('#cfa16e');
+    const c2 = color('#b0713a');
+    const strips = 40;
+    const ctx = g.drawingContext;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(apex.x, apex.y);
+    ctx.lineTo(right.x, right.y);
+    ctx.lineTo(left.x, left.y);
+    ctx.closePath();
+    ctx.clip();
+
+    for (let i = 0; i <= strips; i++) {
+      const t = i / strips;
+      const col = lerpColor(c1, c2, t);
+      g.noStroke();
+      g.fill(col);
+      const y = apex.y + t * (baseY - apex.y);
+      g.rect(centerX - halfBase - 10, y, halfBase * 2 + 20, (baseY - apex.y) / strips + 1);
+    }
+
+    const grainCount = Math.floor(8 + halfBase / 20);
+    for (let gi = 0; gi < grainCount; gi++) {
+      const y = apex.y + (gi / grainCount) * (baseY - apex.y) + (rnd() * 8 - 4);
+      ctx.beginPath();
+      const startX = centerX - halfBase - 20;
+      const endX = centerX + halfBase + 20;
+      let firstp = true;
+      for (let x = startX; x <= endX; x += 6) {
+        const wobble = Math.sin((x * 0.02) + gi * 0.6) * (2 + gi * 0.12) + (rnd() * 2 - 1);
+        const yy = y + wobble;
+        if (firstp) { ctx.moveTo(x, yy); firstp = false; } else { ctx.lineTo(x, yy); }
+      }
+      ctx.strokeStyle = 'rgba(80,50,20,' + (0.06 + rnd() * 0.06) + ')';
+      ctx.lineWidth = 1 + rnd() * 0.6;
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    woodBufferKey = { w: width, h: height, spacing: boardSpacing, topY: topY };
   }
-  ctx.restore();
+
+  // draw the cached buffer and then the border
+  image(woodBuffer, 0, 0);
   noFill();
   stroke('#8a5a2b');
   strokeWeight(2);
